@@ -1,0 +1,107 @@
+basePath: /
+definitions:
+  model.InternalError:
+    properties:
+      request_id:
+        description: Идентификатор запроса. Предназначен для более быстрого поиска
+          проблем.
+        type: string
+    type: object
+  model.ResponseError:
+    properties:
+      message:
+        description: Описание ошибки
+        type: string
+      request_id:
+        description: Идентификатор запроса. Предназначен для более быстрого поиска
+          проблем.
+        type: string
+    type: object
+  model.Tokens:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Authentication Service
+  version: "1.0"
+paths:
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: refresh tokens
+      parameters:
+      - description: tokens for refresh
+        in: body
+        name: tokens
+        required: true
+        schema:
+          $ref: '#/definitions/model.Tokens'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Tokens'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.InternalError'
+      tags:
+      - auth
+  /auth/token:
+    get:
+      consumes:
+      - application/json
+      description: generate tokens
+      parameters:
+      - description: id for generate tokens
+        format: uuid
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Tokens'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.InternalError'
+      tags:
+      - auth
+swagger: "2.0"

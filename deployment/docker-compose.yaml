@@ -1,0 +1,34 @@
+services:
+  auth-service:
+    image: auth-service
+    container_name: auth-container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_DB: authService
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpwdas
+      POSTGRES_PORTS: 5432
+      POSTGRES_HOST: postgres
+      HTTP_PORT: 8080
+      HTTP_HOST: auth-service
+      HTTP_WRITE_TIMEOUT: 15s
+      HTTP_READ_TIMEOUT: 15s
+  postgres:
+    image: postgres:13.3
+    container_name: postgres-container
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: authService
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpwdas
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata-as:/var/lib/postgresql/data
+      - ../assets/postgres/init.sql:/docker-entrypoint-initdb.d/init-db.sql
+volumes:
+  pgdata-as:
+
